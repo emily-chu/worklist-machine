@@ -19,7 +19,6 @@ export default class WorklistRendering extends Component {
     this.checkEarliest = this.checkEarliest.bind(this);
     this.checkLatest = this.checkLatest.bind(this);
     this.checkNoWeekends = this.checkNoWeekends.bind(this);
-    this.getBlockSets = this.getBlockSets.bind(this);
     
   }
 
@@ -44,22 +43,6 @@ export default class WorklistRendering extends Component {
   checkEarliest(){return 800;}
   
   checkLatest(){return 1800;}
-  
-  // DEPRECATED
-  getBlockSets(worklist){
-    if (worklist !== undefined && worklist.semesters !== undefined) {
-      let blockSets = [];
-      worklist.semesters.forEach((sem) => {
-        let set = JSON.parse(JSON.stringify(sem.dayBlocks)); // copy
-        set.semesterId = sem.id;
-        set.startDate = sem.startDate;
-        set.endDate = sem.endDate;
-        blockSets.push(set);
-      })
-      // order blocksets by date
-      return blockSets;
-    }
-  }
   
   render() {
     let worklist = this.returnRenderable();
@@ -98,7 +81,6 @@ class Timetable extends Component {
 
     this.generateTableTitle = this.generateTableTitle.bind(this);
     this.renderTimeRuler = this.renderTimeRuler.bind(this);
-    this.calculateRows = this.calculateRows.bind(this);
 
     this.state = {
       toRender: this.props.dateSpan,
@@ -120,25 +102,6 @@ class Timetable extends Component {
       timeRuler.push(<div className="wm-hour-marker" style={{height:(this.state.standardHeight) + "rem"}}></div>);
     }
     return timeRuler;
-  }
-
-  // Input: RenderableSpan
-  // Output: The same thing, but with the block heights simplified (# of half-hours)
-  // TODO: Could probably just do this in DayColumn
-  calculateRows(day){
-    let blockList = this.state.toRender.dayBlocks[day.toLowerCase()];
-    if (!blockList || blockList.length === 0) return []; //no classes today
-
-    function rows(timeDiff) {
-      return (((timeDiff / 100) * 2) | 0) // | 0 for integer division
-        + (timeDiff % 100 !== 0 ? 1 : 0) // one more row for half hour
-    }
-
-    blockList.forEach(block => {
-      block.startRow = rows(block.startTime - this.state.topTime);
-      block.rowSpan = rows(block.endTime - block.startTime);
-    })
-    return(blockList);
   }
 
   // Input:
@@ -201,26 +164,26 @@ const fakeDayColumnProps = {
   day: "Zonday",
   topTime: 800,
   bottomTime: 1700,
-  standardHeight: "not going in either",
+  standardHeight: "not going in",
   rows: "not going in either",
   
   toRender: [
-    {courseCode: "CPSC 213",
-      sectionCode: "101",
+    {courseId: "CPSC 213",
+      sectionId: "101",
       activityType: "Lecture",
       startTime: 800,
       endTime: 930,
       alternating: 0
     },
-    {courseCode: "CPSC 213",
-      sectionCode: "L01",
+    {courseId: "CPSC 213",
+      sectionId: "L01",
       activityType: "Laboratory",
       startTime: 930,
       endTime: 1130,
       alternating: 0
     },
-    {courseCode: "COMM 202",
-      sectionCode: "101",
+    {courseId: "COMM 202",
+      sectionId: "101",
       activityType: "Lecture",
       startTime: 1600,
       endTime: 1700,
@@ -238,11 +201,12 @@ class DayColumn extends Component {
     this.renderCourse = this.renderCourse.bind(this);
 
     this.state = {
+      toRender: this.props.toRender,
+
       day: this.props.day,
       topTime: this.props.topTime,
       bottomTime:this.props.bottomTime,
-      standardHeight: this.props.standardHeight,
-      toRender: fakeDayColumnProps.toRender
+      standardHeight: this.props.standardHeight
     }
   }
 
@@ -262,8 +226,8 @@ class DayColumn extends Component {
 
   renderCourse(block) {
     let blockHeight = this.rows(block.endTime - block.startTime) * this.state.standardHeight;
-    let courseName = block.courseCode;
-    let courseSection = block.sectionCode;
+    let courseName = block.courseId;
+    let courseSection = block.sectionId;
     return(<div className="wm-course-block rounded" style={{height:blockHeight + "rem"}}>{courseName + " section " +courseSection}</div>); //fix height
   }
 

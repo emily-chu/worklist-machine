@@ -43,7 +43,7 @@ export default function App() {
     return tempSettings;
   }
 
-  // INPUT:  
+  // Input:  
   // inputCourses: [inputCourse]
   // requestedCustoms: [requestedCustom]
   //
@@ -71,10 +71,10 @@ export default function App() {
     }
   }
 
-  // INPUT:  
+  // Input:  
   // [inputCourse]
   //
-  // OUTPUT: 
+  // Output: 
   // [parsedCourse]
   //
   // Removes blank-named courses
@@ -104,8 +104,7 @@ export default function App() {
     return result;
   }
   
-  // OUTPUT: 
-  // [Worklist], or empty array
+  // Output: Result
   function getCurrentResult(){
     let resultIndex = navigationResult - 1;
     if (globalResults.length > 0) {
@@ -116,18 +115,51 @@ export default function App() {
     return ({variations:[]}); //an empty result
   }
   
-  // OUTPUT: 
-  // Worklist, or empty object
-  function outputVariation(){
+  // Output: Variation
+  function getCurrentVariation(){
     let result = getCurrentResult(); // one "result" with many variations inside
     let variationIndex = navigationVariation - 1;
     if (result !== undefined){
       if (0 <= variationIndex && variationIndex < result.variations.length) {
-        console.log("\n\n\n");
-        return combineSchedules(result.base, result.variations[variationIndex].modifier);
+        // return combineSchedules(result.base, result.variations[variationIndex].modifier);
+        return result.variations[variationIndex];
       } 
     }
     return ({semesters:[]}); //an empty variation
+  }
+
+  // Renderer will only ever access days (sun-sat) of a DBS
+  // Package necessary info alongside DBS's
+  function getRenderable() {
+    let base = [];
+    let variation = [];
+
+    // let test = combineSchedules()
+
+    return {
+      info: {},
+      dateSpans: [
+        {semesterId: "1", 
+        startDate: false, 
+        endDate: false, 
+        dayBlocks: {
+          wednesday:[{courseId:"hello",startTime:900,endTime:1200},{courseId:"test",startTime:1300,endTime:1700}]}
+        }, 
+        {semesterId: "2", 
+        startDate: false, 
+        endDate: false, 
+        dayBlocks: {
+          wednesday:[{courseId:"middle",startTime:1200,endTime:1300}],
+          thursday:[{courseId:"hello",startTime:900,endTime:1200},{courseId:"test",startTime:1300,endTime:1700}]
+          }
+        }, 
+        {semesterId: "3", 
+        startDate: false, 
+        endDate: false, 
+        dayBlocks: {}}
+      ],
+      unscheduled: []
+    }
   }
   
   return (
@@ -149,12 +181,12 @@ export default function App() {
             currentVariation={navigationVariation}
             navigateResultFn={setNavigationResult}
             navigateVariationFn={setNavigationVariation}
-            worklistInfo={outputVariation().info}
+            worklistInfo={getCurrentVariation().info}
           />
           <WorklistRendering 
             currentResult={navigationResult}
             currentVariation={navigationVariation}
-            worklist={outputVariation()}
+            worklist={getRenderable()}
           />
         </div>
       </div>

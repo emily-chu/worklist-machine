@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import SettingsMenu from "./tab-menus/SettingsMenu";
 import CoursesMenu from "./tab-menus/CoursesMenu";
 import AboutMenu from "./tab-menus/AboutMenu";

@@ -446,9 +446,9 @@ function retrieveSolvableNeedsOf(semesterId, courseId) {
  * @property {InputCustom[]} customs
  * @property {InputCourse[]} courses
  * @property {Object} settings
-  * @property {string[]} settings.schools from database
-  * @property {string[]} settings.campuses from school's info
-  * @property {string[]} settings.sessions from school's info or school campus's info
+  * @property {string} settings.schools from database
+  * @property {string} settings.campuses from school's info
+  * @property {string} settings.sessions from school's info or school campus's info
   * @property {string} settings.school
   * @property {string} settings.campus
   * @property {string} settings.session

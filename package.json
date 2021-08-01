@@ -4,7 +4,6 @@
   "description": "worklist machine go brrr",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
     "client": "cd client && npm start && cd ..",
     "server": "cd server && npm start && cd .."
   },
@@ -20,9 +19,8 @@
   "homepage": "https://github.com/emily-chu/worklist-machine#readme",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^8.2.0",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "jest": "^26.3.0",
-    "mongoose": "^5.9.28"
+    "mongodb": "^4.0.1"
   }
 }
