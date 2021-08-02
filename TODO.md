@@ -1,7 +1,6 @@
 ## UP NEXT
 - plumbing: get frontend to load schools, then sessions, then submit courses, then load sections into scheduling engine
 - the actual scheduling engine lol
-- delete bloat
 
 ## MISC FRONTEND
 - Remove Component states where they're not necessary
@@ -14,6 +13,8 @@
 
 ## MISC
 - Make the logo |.| |'|
+- remove all the create-react-app crap
+- remove bootstrap
 
 ## FOR LATER
 - Warn users if the distance between two consecutive classes is long enough (maps API) (should only search a small radius, not the whole world)

@@ -1,5 +1,5 @@
 const janIndex = 0, febIndex = 1, marIndex = 2, aprIndex = 3, mayIndex = 4, junIndex = 5, julIndex = 6, augIndex = 7, sepIndex = 8, octIndex = 9, novIndex = 10, decIndex = 11;
- 
+
 const block700800 = {
   courseId: "BLOK 100",
   subsetSectionActivities: false,
@@ -92,32 +92,32 @@ const emptyWLSemester1 = {
   id: "1",
   startDate: new Date(2020, sepIndex, 8),
   endDate: new Date(2020, decIndex, 3),
-  dayBlocks: {emptyDayBlockSet}
+  dayBlocks: { emptyDayBlockSet }
 };
 
 const emptyWLSemester2 = {
   id: "2",
   startDate: new Date(2020, janIndex, 4),
   endDate: new Date(2020, aprIndex, 8),
-  dayBlocks: {emptyDayBlockSet}
+  dayBlocks: { emptyDayBlockSet }
 };
 
 const WLSemester1 = {
   id: "1",
   startDate: new Date(2020, sepIndex, 8),
   endDate: new Date(2020, decIndex, 3),
-  dayBlocks: {dayBlockSet1}
+  dayBlocks: { dayBlockSet1 }
 };
 
 const WLSemester2 = {
   id: "2",
   startDate: new Date(2020, janIndex, 4),
   endDate: new Date(2020, aprIndex, 8),
-  dayBlocks: {dayBlockSet2}
+  dayBlocks: { dayBlockSet2 }
 };
 
 const emptyWorklist1Sem = {
-  info: {gapScore: 100, morningScore: 50, consistencyScore: 0},
+  info: { gapScore: 100, morningScore: 50, consistencyScore: 0 },
   semesters: [
     emptyWLSemester1
   ],
@@ -125,7 +125,7 @@ const emptyWorklist1Sem = {
 };
 
 const emptyWorklist2Sem = {
-  info: {gapScore: 100, morningScore: 50, consistencyScore: 0},
+  info: { gapScore: 100, morningScore: 50, consistencyScore: 0 },
   semesters: [
     emptyWLSemester1,
     emptyWLSemester2
@@ -134,7 +134,7 @@ const emptyWorklist2Sem = {
 };
 
 const simpleWorklist2Sem1 = {
-  info: {gapScore: 100, morningScore: 50, consistencyScore: 0},
+  info: { gapScore: 100, morningScore: 50, consistencyScore: 0 },
   semesters: [
     WLSemester1,
     WLSemester2,
@@ -143,8 +143,34 @@ const simpleWorklist2Sem1 = {
 };
 
 module.exports = {
-  emptyDayBlockSet: emptyDayBlockSet, 
-  emptyWorklist1Sem: emptyWorklist1Sem,
-  emptyWorklist2Sem: emptyWorklist2Sem,
-  wl1: simpleWorklist2Sem1
+  block700800,
+  block800900,
+  block9001000,
+  block10001130,
+  block17001800,
+  block18001930,
+  emptyDayBlockSet,
+  dayBlockSet1,
+  dayBlockSet2,
+  dayBlockSetAll,
+  emptyWLSemester1,
+  emptyWLSemester2,
+  WLSemester1,
+  WLSemester2,
+  emptyWorklist1Sem,
+  emptyWorklist2Sem,
+  wl1: simpleWorklist2Sem1,
+
+  janIndex,
+  febIndex,
+  marIndex,
+  aprIndex,
+  mayIndex,
+  junIndex,
+  julIndex,
+  augIndex,
+  sepIndex,
+  octIndex,
+  novIndex,
+  decIndex,
 }

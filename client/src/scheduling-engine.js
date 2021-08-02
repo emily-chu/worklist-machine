@@ -1,4 +1,4 @@
-import {exportjust001, exportcpsc213, exportcpsc213a} from "./example-courses.js";
+import { exportjust001, exportcpsc213, exportcpsc213a } from "./example-courses.js";
 
 const emptyBlockSet = {
   standardBlock: false,
@@ -40,7 +40,7 @@ export default function generateResults(userRequest) {
   // TODO: Returns basic empty two blocksets
   let step1BlockSets = customsToBlockSets(userRequest.customs);
   if (step1BlockSets === false) {
-    return {schedulingError: "There was a problem with your custom blocks (step 1)."}
+    return { schedulingError: "There was a problem with your custom blocks (step 1)." }
   }
 
   // STEP 2: Verify input courses, semesters, sections exist in database
@@ -48,18 +48,18 @@ export default function generateResults(userRequest) {
   console.info("step2Courserequest here:", step2CourseRequest);
   if (Array.isArray(step2CourseRequest)) {
     console.info("SE is returning database errors (step 2).");
-    return {databaseErrors: step2CourseRequest};
+    return { databaseErrors: step2CourseRequest };
   }
 
   // STEP 3: Create results using specific sections, if any
   // TODO: current
   let initializer = [
     {
-    base: step1BlockSets,
-    variations: [],
-    //courseRequest: step2CourseRequest, // do we need this?
-    satisfiedNeeds: [],
-    solvableNeeds: []
+      base: step1BlockSets,
+      variations: [],
+      //courseRequest: step2CourseRequest, // do we need this?
+      satisfiedNeeds: [],
+      solvableNeeds: []
     }
   ];
   let step3Bases = generateBaseResults(initializer, step2CourseRequest.specSection);
@@ -67,11 +67,11 @@ export default function generateResults(userRequest) {
 
   // STEP 4: Multiplies each base by its possible arrangements
   // TODO
-  let step4Solvables = step3Bases.flatMap((b)=>generateArrangements(b, step2CourseRequest.specSemester, step2CourseRequest.unspec));
-    // let step4Solvables = step3Bases.reduce((result, base) => {
-    // 	let arrangedBase = generateArrangements(base, step2CourseRequest.specSemester, step2CourseRequest.unspec);
-    // 	return arrangedBase ? result.concat(arrangedBase) : result, []
-    // });
+  let step4Solvables = step3Bases.flatMap((b) => generateArrangements(b, step2CourseRequest.specSemester, step2CourseRequest.unspec));
+  // let step4Solvables = step3Bases.reduce((result, base) => {
+  // 	let arrangedBase = generateArrangements(base, step2CourseRequest.specSemester, step2CourseRequest.unspec);
+  // 	return arrangedBase ? result.concat(arrangedBase) : result, []
+  // });
   console.info("step4Solvables here:", step4Solvables);
 
   // STEP 5: Make many results from each base
@@ -81,10 +81,10 @@ export default function generateResults(userRequest) {
   // STEP 6: Fill out the variations of each result
   // TODO: returns result
   step4Solvables = fillVariations(step4Solvables);
-  
+
   // Output
-  let __________test__________ = 
-  combineBlockSets(exportcpsc213.singleSemesters[0].sections[2].dayBlocks, emptyBlockSet);
+  let __________test__________ =
+    combineBlockSets(exportcpsc213.singleSemesters[0].sections[2].dayBlocks, emptyBlockSet);
 
   console.log("*********************************************************************");
   console.log("*********************************************************************");
@@ -98,23 +98,23 @@ export default function generateResults(userRequest) {
   return [{
     info: {},
     base: [
-      {id: "1", startDate: false, endDate: false, dayBlocks: emptyBlockSet}, 
-      {id: "2", startDate: false, endDate: false, dayBlocks: emptyBlockSet},
-      {id: "A", startDate: false, endDate: false, dayBlocks: emptyBlockSet},
-      {id: "B", startDate: false, endDate: false, dayBlocks: emptyBlockSet}
+      { id: "1", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+      { id: "2", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+      { id: "A", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+      { id: "B", startDate: false, endDate: false, dayBlocks: emptyBlockSet }
     ],
     variations: [
       [
-        {id: "1", startDate: false, endDate: false, dayBlocks: emptyBlockSet}, 
-        {id: "2", startDate: false, endDate: false, dayBlocks: emptyBlockSet},
-        {id: "A", startDate: false, endDate: false, dayBlocks: emptyBlockSet},
-        {id: "B", startDate: false, endDate: false, dayBlocks: emptyBlockSet}
+        { id: "1", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+        { id: "2", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+        { id: "A", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+        { id: "B", startDate: false, endDate: false, dayBlocks: emptyBlockSet }
       ],
       [
-        {id: "1", startDate: false, endDate: false, dayBlocks: emptyBlockSet}, 
-        {id: "2", startDate: false, endDate: false, dayBlocks: emptyBlockSet},
-        {id: "A", startDate: false, endDate: false, dayBlocks: emptyBlockSet},
-        {id: "B", startDate: false, endDate: false, dayBlocks: emptyBlockSet}
+        { id: "1", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+        { id: "2", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+        { id: "A", startDate: false, endDate: false, dayBlocks: emptyBlockSet },
+        { id: "B", startDate: false, endDate: false, dayBlocks: emptyBlockSet }
       ]
     ],
     abnormalSections: []
@@ -140,18 +140,18 @@ function customsToBlockSets(customBlocks) {
 }
 
 // ParsedCourse[] => CourseRequest, or DatabaseError[]
-function verifyCourses(parsedCourses){
+function verifyCourses(parsedCourses) {
   console.log("Function verifyCourses(parsedCourses) was called!");
   let badCourses = [];
   let sorted = {
-    specSection: [], 
-    specSemester: [], 
-    unspec: [] 
+    specSection: [],
+    specSemester: [],
+    unspec: []
   };
   parsedCourses.forEach((pc) => {
     let course = retrieveCourse(pc.name);
     if (!course) {
-      badCourses.push({index: pc.id, message: (`Could not find course ${pc.name}`)})
+      badCourses.push({ index: pc.id, message: (`Could not find course ${pc.name}`) })
     } else {
       if (pc.mustBeSection) {
         let badSections = [];
@@ -160,27 +160,27 @@ function verifyCourses(parsedCourses){
         // 		if (!courseSectionExists(sec, false, pc.name)) { badSections.push(sec); }
         // 	})
         // } else {
-          pc.mustBeSection.forEach((sec) => {
-            if (!courseSectionExists(sec, false, pc.name)) { badSections.push(sec); }
-          })
+        pc.mustBeSection.forEach((sec) => {
+          if (!courseSectionExists(sec, false, pc.name)) { badSections.push(sec); }
+        })
         // }
-        if (badSections.length === 0) {sorted.specSection.push(pc)} else {badCourses.push(`Found ${pc.name}, but could not find all of the specified sections: ${badSections}`)}
+        if (badSections.length === 0) { sorted.specSection.push(pc) } else { badCourses.push(`Found ${pc.name}, but could not find all of the specified sections: ${badSections}`) }
       } else if (pc.mustBeSemester) {
         let badSemesters = [];
         pc.mustBeSemester.forEach((sem) => {
           if (!courseSemesterExists(sem, pc.name)) { badSemesters.push(sem); }
         })
-        if (badSemesters.length === 0) {sorted.specSemester.push(pc)} else {badCourses.push(`Found ${pc.name}, but could not find ${pc.name} in ${badSemesters}`)}
+        if (badSemesters.length === 0) { sorted.specSemester.push(pc) } else { badCourses.push(`Found ${pc.name}, but could not find ${pc.name} in ${badSemesters}`) }
       } else {
         sorted.unspec.push(pc)
       }
     }
   });
-  return badCourses.length > 0? badCourses : sorted;
+  return badCourses.length > 0 ? badCourses : sorted;
 }
 
 // Result[], parsedCourse[] => Result[] or false
-function generateBaseResults(currentResults, toAdd){
+function generateBaseResults(currentResults, toAdd) {
   console.log("Function generateBaseResults(customBlockSet, sectionCourses) was called!");
   if (toAdd.length === 0) {
     return currentResults;
@@ -194,10 +194,10 @@ function generateBaseResults(currentResults, toAdd){
       return false;
     } else {
       let newResults = [];
-      results.forEach((r)=>{
-        course.mustBeSection.forEach((sec)=>{
+      results.forEach((r) => {
+        course.mustBeSection.forEach((sec) => {
           let test = addSection(retrieveSection(sec, false, course.name), r)
-          if (test) {newResults.push(test);}
+          if (test) { newResults.push(test); }
         })
       })
       return newResults;
@@ -209,23 +209,23 @@ function generateBaseResults(currentResults, toAdd){
 }
 
 // Result, parsedCourse[], parsedCourse[] => Result[]
-function generateArrangements(baseResult, specSemCourses, unspecCourses){
+function generateArrangements(baseResult, specSemCourses, unspecCourses) {
   console.log("Function generateArrangements(baseResult, semesterCourses, unspecCourses) was called!");
   let results = [baseResult];
 
-  specSemCourses.forEach((sc)=>{
-    sc.mustBeSemester.forEach((sem)=>{
+  specSemCourses.forEach((sc) => {
+    sc.mustBeSemester.forEach((sem) => {
       retrieveSolvableNeedsOf(sem, sc.name);
     });
   });
-  unspecCourses.forEach(()=>{});
+  unspecCourses.forEach(() => { });
   //retrieveSolvableNeedsOf
   return results;
 }
 
 //TODO:
 // Result[] => Result[]
-function partialSolve(solvables){
+function partialSolve(solvables) {
   console.log("Function partialSolve(solvables) was called!");
   // solvables.forEach((s)=>{
   // 	s.solvableNeeds.forEach(()=>{
@@ -238,10 +238,10 @@ function partialSolve(solvables){
 
 //TODO:
 // Result with a few complex solvableNeeds => Result (Solution)
-function fillVariations(result){
+function fillVariations(result) {
   console.log("Function fillVariations(result){ was called!");
-  return result; 
-}	
+  return result;
+}
 
 
 
@@ -251,9 +251,9 @@ function fillVariations(result){
 
 //TODO:
 // Section
-function addSection(section, result){
+function addSection(section, result) {
   console.log("Function addSection(section, result) was called!");
-  return result; 
+  return result;
   // let test = combineSchedules([section.dayBlocks], result.base)
   // return ({
   // 	base: test,
@@ -268,8 +268,8 @@ function dispose(thing, reason) {
   console.log("Function dispose(thing, reason)  was called!");
   console.log(thing, "was thrown out because", reason);
 }
-  
-function arrangeCourse(courseName, arrangement){
+
+function arrangeCourse(courseName, arrangement) {
   console.log("Function arrangeCourse(courseName, arrangement){ was called!");
 }
 
@@ -278,12 +278,12 @@ function makeResult(base, variations, initialNeeds, satisfied, solvableNeeds, ex
 }
 
 // DayBlockSet[], DayBlockSet[] => DayBlockSet[] or false
-export function combineSchedules(schedule1, schedule2){
+export function combineSchedules(schedule1, schedule2) {
   console.log("Function combineSchedules(schedule1, schedule2) was called!");
   if (!schedule1 || !schedule2) return schedule1 || schedule2;
   let result = schedule2;
-  schedule1.forEach((dbs1)=>{
-    let target = result.findIndex((dbs2)=>{return dbs1.semester === dbs2.semester});
+  schedule1.forEach((dbs1) => {
+    let target = result.findIndex((dbs2) => { return dbs1.semester === dbs2.semester });
     if (target > -1) {
       result[target] = combineBlockSets(dbs1, result[target]);
     } else {
@@ -294,14 +294,14 @@ export function combineSchedules(schedule1, schedule2){
 
 // (DayBlockSet, DayBlockSet) => DayBlockSet or false
 // smallSet will usually have single blocks, and may have a standard block
-function combineBlockSets(smallSet, largeSet){
+function combineBlockSets(smallSet, largeSet) {
   console.log("Function combineBlockSets(smallSet, largeSet) was called!");
   let result = largeSet;
   let smallStandard = smallSet.standardBlock;
-  ["sunday","monday","tuesday","thursday","friday","saturday"].filter(day => smallSet[day])
-    .forEach((day)=>{
+  ["sunday", "monday", "tuesday", "thursday", "friday", "saturday"].filter(day => smallSet[day])
+    .forEach((day) => {
       let combined = combineDays(
-        (smallStandard || smallSet[day]), 
+        (smallStandard || smallSet[day]),
         (largeSet[day] || [])
       );
       if (combined) {
@@ -315,13 +315,13 @@ function combineBlockSets(smallSet, largeSet){
 
 // (Block, Block[]) => Block[] or false
 // (Block[], Block[]) => Block[] or false
-function combineDays(smallDay, largeDay){
+function combineDays(smallDay, largeDay) {
   console.log("Function combineDays(smallDay, largeDay) was called!");
   if (typeof smallDay === "object") {
     return (insertBlock([], smallDay, largeDay))
   } else {
     let result = largeDay
-    smallDay.forEach((block)=>{insertBlock([], block, result)})
+    smallDay.forEach((block) => { insertBlock([], block, result) })
     return result;
   }
 }
@@ -330,7 +330,7 @@ function combineDays(smallDay, largeDay){
 // ([], Block, Block[]) => Block[] or false
 function insertBlock(earlier, block, blocks) {
   console.log("Function insertBlock(earlier, block, blocks)  was called!");
-  if (earlier.length > 0 && block.startTime < earlier[earlier.length-1].endTime) {
+  if (earlier.length > 0 && block.startTime < earlier[earlier.length - 1].endTime) {
     return false;
   } else {
     if (blocks.length === 0 || block.endTime <= blocks[0].startTime) {
@@ -348,9 +348,9 @@ function insertBlock(earlier, block, blocks) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const database = [exportjust001, exportcpsc213, exportcpsc213a] // TODO
 
-function courseExists(courseId){return true && retrieveCourse(courseId)} 
-function courseSemesterExists(courseId, semesterId){return true && retrieveCourseSemester(courseId, semesterId)}
-function courseSectionExists(courseId, semesterId, sectionId){return true && retrieveSection(courseId, semesterId, sectionId)}
+function courseExists(courseId) { return true && retrieveCourse(courseId) }
+function courseSemesterExists(courseId, semesterId) { return true && retrieveCourseSemester(courseId, semesterId) }
+function courseSectionExists(courseId, semesterId, sectionId) { return true && retrieveSection(courseId, semesterId, sectionId) }
 
 // string =DATABASE=> Course or false
 function retrieveCourse(courseId) {
@@ -370,7 +370,7 @@ function retrieveCourseSemester(semesterId, courseId) {
       || retrieveCourse(courseId).otherSemesters.find(sem => sem.id === semesterId)
       || false
     );
-  } catch(e) {
+  } catch (e) {
     console.log("Couldn't retrieve the specified course: ", courseId);
     return false;
   }
@@ -378,20 +378,20 @@ function retrieveCourseSemester(semesterId, courseId) {
 
 // (string, string? string) =DATABASE=> CourseSection or false
 function retrieveSection(sectionId, semesterId, courseId) {
-  try{
+  try {
     if (semesterId) {
       return (
-        retrieveCourseSemester(semesterId, courseId).sections.find(sec => sec.id === sectionId) 
+        retrieveCourseSemester(semesterId, courseId).sections.find(sec => sec.id === sectionId)
         || false
       );
     } else {
       return retrieveSemestersOf(courseId).reduce(
-        (found, semId)=> {
+        (found, semId) => {
           return (found || retrieveSection(sectionId, semId, courseId))//retrieveCourseSemester(semId, courseId).sections.find(sec => sec.id === sectionId) 
         }, false
       )
     }
-  } catch(e) {
+  } catch (e) {
     console.log("Couldn't retrieve the specified course or semester");
     return false;
   }
@@ -401,7 +401,7 @@ function retrieveSection(sectionId, semesterId, courseId) {
 function retrieveSemestersOf(courseId) {
   try {
     return retrieveSingleSemestersOf(courseId).concat(retrieveOtherSemestersOf(courseId));
-  } catch(e) {
+  } catch (e) {
     console.log("Couldn't retrieve the specified course: ", courseId);
     return false;
   }
@@ -410,7 +410,7 @@ function retrieveSemestersOf(courseId) {
 function retrieveSingleSemestersOf(courseId) {
   try {
     return retrieveCourse(courseId).singleSemesters.map(sem => sem.id);
-  } catch(e) {
+  } catch (e) {
     console.log("Couldn't retrieve the specified course: ", courseId);
     return false;
   }
@@ -419,7 +419,7 @@ function retrieveSingleSemestersOf(courseId) {
 function retrieveOtherSemestersOf(courseId) {
   try {
     return retrieveCourse(courseId).otherSemesters.map(sem => sem.id);
-  } catch(e) {
+  } catch (e) {
     console.log("Couldn't retrieve the specified course: ", courseId);
     return false;
   }
@@ -428,10 +428,10 @@ function retrieveOtherSemestersOf(courseId) {
 // TODO: The map is currently unnecessary
 // string =DATABASE=> [SolvableNeed] (typical length = 1 or 2)
 function retrieveSolvableNeedsOf(semesterId, courseId) {
-  return retrieveCourseSemester(semesterId, courseId).requiredActivities.map(ra=>{ 
+  return retrieveCourseSemester(semesterId, courseId).requiredActivities.map(ra => {
     return {
-      activity: ra.activity, 
-      solutions: ra.solutions, 
+      activity: ra.activity,
+      solutions: ra.solutions,
       tiedTo: ra.tiedTo
     }
   })
@@ -462,13 +462,13 @@ function retrieveSolvableNeedsOf(semesterId, courseId) {
   * @todo (maybe) school, campus, and session may be stored as a number
  */
 
- /**
- * @typedef {Object} InputCustom
- * @property {string} name
- * @todo
- * 
- * @todo (maybe) creation of custom DayBlockSets can happen within the state of the CoursesMenu
- */
+/**
+* @typedef {Object} InputCustom
+* @property {string} name
+* @todo
+*
+* @todo (maybe) creation of custom DayBlockSets can happen within the state of the CoursesMenu
+*/
 
 /**
  * @typedef {Object} InputCourse
@@ -488,29 +488,29 @@ function retrieveSolvableNeedsOf(semesterId, courseId) {
  * @property {string | undefined} renderName
  */
 
- /**
- * @typedef {Object} DayBlockSet
- * @property {Block | false} standardBlock
- * @property {Block | Block[] | false} sunday
- * @property {Block | Block[] | false} monday
- * @property {Block | Block[] | false} tuesday
- * @property {Block | Block[] | false} wednesday
- * @property {Block | Block[] | false} thursday
- * @property {Block | Block[] | false} friday
- * @property {Block | Block[] | false} saturday
- * @property {string} semester
- * @property {Date | false} subsetStartDate
- * @property {Date | false} subsetEndDate
- */
+/**
+* @typedef {Object} DayBlockSet
+* @property {Block | false} standardBlock
+* @property {Block | Block[] | false} sunday
+* @property {Block | Block[] | false} monday
+* @property {Block | Block[] | false} tuesday
+* @property {Block | Block[] | false} wednesday
+* @property {Block | Block[] | false} thursday
+* @property {Block | Block[] | false} friday
+* @property {Block | Block[] | false} saturday
+* @property {string} semester
+* @property {Date | false} subsetStartDate
+* @property {Date | false} subsetEndDate
+*/
 
- /**
+/**
  * @typedef {Object} CourseSection
  */
 
- /**
+/**
  * @typedef {Object} CourseSemester
  */
 
- /**
+/**
  * @typedef {Object} Course
  */

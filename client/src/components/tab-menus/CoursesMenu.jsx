@@ -154,17 +154,17 @@ class InputCourse extends Component{
   }
 }
 
-class InputCustom extends Component {
-  constructor(props) {
-    super(props);
-  }
+// class InputCustom extends Component {
+//   constructor(props) {
+//     super(props);
+//   }
 
-  handleChange() {
-  }
+//   handleChange() {
+//   }
   
-  render() {
-    return(
-      <p>This is a InputCustom component!</p>
-    )
-  }
-}
+//   render() {
+//     return(
+//       <p>This is a InputCustom component!</p>
+//     )
+//   }
+// }

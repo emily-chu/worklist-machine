@@ -20,7 +20,11 @@ app.get('/schools', function (req, res, next) {
     res.send({
       schools: doc.databases
         .filter(sch => sch.name.startsWith(db.schoolPrefix))
-        .map(sch => ({ dbName: sch.name, name: sch.name.slice(db.schoolPrefix.length) }))
+        .map(sch => ({ 
+          dbName: sch.name, 
+          name: sch.name.slice(db.schoolPrefix.length) 
+          // todo: valid semester list
+        }))
     });
   }).catch(next);
 });
