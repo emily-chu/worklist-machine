@@ -29,52 +29,46 @@ export default function App() {
     };
     fetchCourses(inputCourses).then(parsed => {
       userRequest.courses = parsed;
-      console.log("App.js is sending this request to the SE:", userRequest);
+      console.info(parsed)
+      console.group("App.js is sending this request to the SE:", userRequest);
       return engineFunction(userRequest);
     }).then(engineOutput => {
-      if (engineOutput.databaseError) {
-        console.log("Engine produced database errors:", engineOutput.databaseErrors);
-      } else if (engineOutput.schedulingError) {
-        console.log("Engine produced a scheduling error:", engineOutput.schedulingError);
-      } else {
+      // if (engineOutput.databaseError) {
+      //   console.log("Engine produced database errors:", engineOutput.databaseErrors);
+      // } else if (engineOutput.schedulingError) {
+      //   console.log("Engine produced a scheduling error:", engineOutput.schedulingError);
+      // } else {
+        console.groupEnd("Engine successfuly produced results:", engineOutput);
         setResults(engineOutput);
         setSchedulePage(1);
         setVariationPage(1);
         setCachedRequest(userRequest);
-        console.log("Engine successfuly produced results:", engineOutput);
-      }
+      // }
     });
   }
 
   // Removes blank-named courses
   // formats course name, semester, and section for scheduler
   function fetchCourses(inputCourses) {
-    return new Promise((resolve, reject) => {
+    const reqCourses = inputCourses.map(ic => !ic.name ? undefined : {
+      name: ic.name.replace(/[^A-Za-z0-9]/g, '').toUpperCase(),
+      mustBeSemester: ic.mustBeSemester && ic.mustBeSemester.replace(/\s/g, '').toUpperCase().split(",").filter(sem => sem),
+      mustBeSection: ic.mustBeSection && ic.mustBeSection.replace(/\s/g, '').toUpperCase().split(",").filter(sec => sec),
+      id: ic.id
+    })
 
-      let result = []
-      inputCourses.forEach(function (ic) {
-        if (ic.name !== "" && ic.name !== null) {
-          let parsed = {};
-          parsed.name = ic.name
-            .replace(/[^A-Za-z0-9]/g, '')
-            .toUpperCase();
-          parsed.mustBeSemester = (ic.mustBeSemester && ic.mustBeSemester
-            .replace(/\s/g, '')
-            .toUpperCase()
-            .split(",")
-            .filter(sem => sem));
-          parsed.mustBeSection = (ic.mustBeSection && ic.mustBeSection
-            .replace(/\s/g, '')
-            .toUpperCase()
-            .split(",")
-            .filter(sec => sec));
-          parsed.id = ic.id;
-          result.push(parsed);
-        }
-      })
-      resolve(result);
-    });
+    return postApi('http://localhost:5000/ubc-vancouver/2021/courses', { courses: reqCourses });
   }
+
+  async function postApi(url, body) {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return response.json();
+  }
+
 
   // Output: Result
   function getCurrentResult() {

@@ -47,21 +47,51 @@ app.get('/:school/sessions', function (req, res, next) {
  * @param {name: string, section?: string}[] req.body.courses
  */
 app.post('/:school/:session/courses', function (req, res, next) {
-  const query = {
-    name: { $in: req.body.courses.map(c => c.name) }
-  }
-  const projection = {
-    // todo: use this to include only necessary fields
-  }
+  // const query = {
+  //   name: { $in: req.body.courses.map(c => c.name) }
+  // }
+  // const projection = {
+  //   // todo: use this to include only necessary fields
+  // }
+  // db.wakeDb().then(mongo => {
+  //   return mongo.db(db.schoolPrefix + req.params.school)
+  //     .collection(req.params.session)
+  //     .find(query)
+  //     .toArray()
+  //     .then(x => {
+  //       console.log(x.length)
+  //       res.send(x);
+  //     })
+  // }).catch(next);
+
+  // inefficient way of dealing with the space between dept name and course code
+  const aggPipeline = [
+    {
+      $addFields: {
+        name: {
+          $replaceAll: {
+            input: "$name",
+            find: " ",
+            replacement: ""
+          }
+        }
+      }
+    },
+    {
+      $match: {
+        name: {
+          $in: req.body.courses.map(c => c.name)
+        }
+      }
+    }
+  ];
+  
   db.wakeDb().then(mongo => {
     return mongo.db(db.schoolPrefix + req.params.school)
       .collection(req.params.session)
-      .find(query)
-      .toArray()
-      .then(x => {
-        console.log(x.length)
+      .aggregate(aggPipeline).toArray().then(x => {
         res.send(x);
-      })
+      });
   }).catch(next);
 })
 

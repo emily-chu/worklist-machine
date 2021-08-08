@@ -1,5 +1,6 @@
 const mongo = require('../connection');
 const https = require('https')
+const fs = require('fs')
 
 async function uploadCourses() {
   const client = await mongo.wakeDb();
@@ -16,13 +17,31 @@ async function uploadCourses() {
  */
 async function uploadSectionsToCourses() {
   const client = await mongo.wakeDb();
-  const collection = client.db('ubc-vancouver').collection('2021');
-  const bigData = await askApi('/sectionInfo');
-  bigData.forEach(sec => {
-    // push section to course.sections, creating .sections if necessary
-    console.log('adding section: ' + sec.name);
-    collection.findOneAndUpdate({ subject: sec.subject, course: sec.course }, { $push: { sections: sec } });
+  const collection = client.db('school-ubc-vancouver').collection('2021');
+
+  // nvm api went down
+  fs.readFile('sections.json', 'utf8', (err, data) => {
+    if (err) return console.log(err)
+    let js = JSON.parse(data);
+    js.forEach((sec, idx) => {
+      // if (idx <= 17654) return; // lol free tier mongo iguess
+      console.log(idx + ': adding section: ' + sec.name);
+      collection.findOneAndUpdate({ subject: sec.subject, course: sec.course }, { $push: { sections: sec } });
+    });
   });
+
+  // const bigData = await askApi('/sectionInfo');
+  // bigData.forEach((sec, idx) => {
+  //   // push section to course.sections, creating .sections if necessary
+  //   console.log(idx + ': adding section: ' + sec.name);
+  //   collection.findOneAndUpdate({ subject: sec.subject, course: sec.course }, { $push: { sections: sec } });
+  // });
+}
+
+async function unsetSections() {
+  const client = await mongo.wakeDb();
+  const collection = client.db('school-ubc-vancouver').collection('2021');
+  collection.updateMany({}, { $unset: { sections: 1 } });
 }
 
 /**
@@ -80,7 +99,9 @@ async function transfer() {
 function main() {
   // uploadCourses();
   // wipeCollection('2021');
-  // uploadSectionsToCourses();
+  uploadSectionsToCourses();
+  // unsetSections();
+    
 }
 
 main();
